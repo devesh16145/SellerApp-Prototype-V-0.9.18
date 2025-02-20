@@ -1,0 +1,28 @@
+workflows:
+  android-app:
+    name: Build Android APK
+    max_build_duration: 30
+    instance_type: mac_mini_m1  # Use 'linux' if you don't need macOS
+    environment:
+      vars:
+        NODE_VERSION: 18  # Adjust this based on your project
+        JAVA_VERSION: 17  # Java version required for Android builds
+      flutter: stable
+    triggering:
+      events:
+        - push
+        - pull_request
+      branch_patterns:
+        - pattern: main
+          include: true
+          source: true
+    scripts:
+      - name: Install dependencies
+        script: |
+          npm install
+      - name: Build Android APK
+        script: |
+          cd android
+          ./gradlew assembleDebug
+    artifacts:
+      - android/app/build/outputs/apk/debug/app-debug.apk
